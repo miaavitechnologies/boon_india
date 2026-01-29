@@ -1,0 +1,31 @@
+import { test } from '../../fixtures/boon.fixtures';
+import { HomePage } from '../../Pages/homePage';
+import { JobDetailsPage } from '../../Pages/Jobdetails/jobdetailspage';
+import { ProfilePage } from '../../Pages/profile-page';
+
+test.describe('verifying the save job functionality', () => {
+  test.use({
+    mobileNumber: '9999999999',
+    otpCode: '123456',
+  });
+
+  test('verifying the save job via top hiring functionality', async ({
+    page,
+    loginPage: _loginPage,
+  }) => {
+    const homepageobj = new HomePage(page);
+    const jobDetailsobj = new JobDetailsPage(page);
+    const profilepageobj = new ProfilePage(page);
+
+    await homepageobj.tophiringLocations('Kuwait');
+    await homepageobj.clickViewJobsForCountry('Kuwait');
+
+    await jobDetailsobj.jobCard();
+    await jobDetailsobj.selectPositiontophiring();
+    //await expect(page.getByRole('checkbox', { name: 'Steel Fixers' })).toBeChecked();
+    await jobDetailsobj.saveJobClick();
+    await profilepageobj.clickProfileBtn('apple review team');
+    await profilepageobj.jobHeaderclick();
+    await profilepageobj.savedJobs();
+  });
+});
