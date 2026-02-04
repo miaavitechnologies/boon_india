@@ -1,10 +1,11 @@
 import { test, expect } from '../fixtures/boon.fixtures';
 import { RegisteredAgency } from '../Pages/registered-Agencies-page';
+import testData from '../test_data/TestData.json'
 
 test.describe('verifying the registered agency functionality', () => {
   test.use({
-    mobileNumber: '9999999999',
-    otpCode: '123456',
+    mobileNumber: testData.login.mobileNumber,
+    otpCode: testData.login.otpCode,
   });
 
   test('verifying the registered agency valid functionality', async ({
@@ -16,7 +17,7 @@ test.describe('verifying the registered agency functionality', () => {
     await registeredAgencyObj.clickExploreAgencies();
     await registeredAgencyObj.navigateToPage();
     await expect(page.getByText('Showing results across all')).toBeVisible();
-    await registeredAgencyObj.selectstateCity('Maharashtra', 'Mumbai');
+    await registeredAgencyObj.selectstateCity(testData.registredAgencies.state, testData.registredAgencies.city);
     await registeredAgencyObj.selectAgency();
     await registeredAgencyObj.viewJobBtn();
   });

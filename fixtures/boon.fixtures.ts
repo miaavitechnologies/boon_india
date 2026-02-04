@@ -1,9 +1,13 @@
 import { test as base, expect } from '@playwright/test';
 import { LoginPage } from '../Pages/login-Logout-page';
+import testData from '../test_data/TestData.json';
+
 
 // 1. Define types for both your Page Objects AND your parameters
 type BoonFixtures = {
-  mobileNumber: string;
+  
+  
+  mobileNumber: string ;
   otpCode: string;
   loginPage: LoginPage;
 };
@@ -23,9 +27,6 @@ export const test = base.extend<BoonFixtures>({
 
     // Use the parameterized mobile number
     await loginPage.enterMobile(mobileNumber);
-    //  await loginPage.submitMobile();
-
-    // Use the parameterized OTP
     await loginPage.enterOtp(otpCode);
     // await loginPage.verifyOtp();
 

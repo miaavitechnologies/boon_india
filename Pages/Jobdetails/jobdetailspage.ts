@@ -100,13 +100,13 @@ export class JobDetailsPage extends BasePage {
 
       // Skip disabled positions
       if (await checkbox.isDisabled()) {
-        console.log(`⏭️ Position ${i} is disabled, skipping`);
+        console.log(` Position ${i} is disabled, skipping`);
         continue;
       }
 
       // Skip already checked
       if (await checkbox.isChecked()) {
-        console.log(`⏭️ Position ${i} already checked, skipping`);
+        console.log(` Position ${i} already checked, skipping`);
         continue;
       }
 
@@ -114,12 +114,12 @@ export class JobDetailsPage extends BasePage {
       const positionName = (await row.innerText()).trim();
       // Select checkbox
       await checkbox.check();
-      console.log(`✅ Selected position: ${positionName}`);
+      console.log(` Selected position: ${positionName}`);
 
       // Return selected position for later validation
       return positionName;
     }
 
-    throw new Error('❌ No enabled positions found to apply');
+    throw new Error(' No enabled positions found to apply');
   }
 }

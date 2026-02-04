@@ -1,0 +1,58 @@
+{
+  "login": {
+    "mobileNumber": "9999999999",
+    "otpCode": "123456"
+  },
+  "job": {
+    "jobtitle": "nurse",
+    "position": "nurse",
+    "tophiringcountry": "UAE",
+    "resumeFile": "test_data/Resume.pdf",
+    "viewjobcountry": "UAE"
+  },
+  "savejobViaTophirng": {
+    "tophiringcountry": "Saudi Arabia",
+    "viewjobcountrybutton": "Saudi Arabia"
+  },
+  "savejobviaSearch": {
+    "jobtitle": "driver",
+    "position": "driver"
+  },
+  "profile": {
+    "profileName": "apple review team"
+  },
+  "gamca": {
+    "City": "Bengaluru",
+    "firstname": "saraswathi",
+    "lastname": "saru",
+    "Dob": "23-01-2000",
+    "gender": "Female",
+    "country_travellingto": "Bahrain",
+    "positionAppliedfor": "Barber",
+    "passportnumber": "A356898",
+    "confirmpassportnumber": "A356898",
+    "passportissueplace": "Hyderabad",
+    "passportissuedate": "23-02-2025",
+    "passportexpirydate": "23-02-2027",
+    "emailId": "Saru.madh@gmail.com",
+    "phonenumber": "9652017172",
+    "maritalstatus": "Single",
+    "visatype": "Family Visa",
+    "Aadhar": "786423455678"
+  },
+  "registredAgencies": {
+    "state": "Maharashtra",
+    "city": "Mumbai"
+  },
+  "testTradecentre": {
+    "state": "Maharashtra",
+    "city": "Mumbai"
+  },
+
+  "walk-In":{
+    "jobtitle":"electrician",
+    "country":"Saudi Arabia"
+    
+  }
+
+}

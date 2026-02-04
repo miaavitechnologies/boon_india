@@ -62,10 +62,7 @@ export class LoginPage extends BasePage {
     await this.verifyOtpBtn.click();
   }
 
-  // public async verifyOtp() {
-  //   await this.verifyOtpBtn.click();
-  // }
-
+  
   public async ProfileView(_value: string): Promise<void> {
     await this.profileBtn.click();
   }

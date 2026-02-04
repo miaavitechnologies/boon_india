@@ -3,11 +3,12 @@ import { HomePage } from '../../Pages/homePage';
 import { JobDetailsPage } from '../../Pages/Jobdetails/jobdetailspage';
 import { ProfilePage } from '../../Pages/profile-page';
 import path from 'path';
+import testData from '../../test_data/TestData.json';
 
 test.describe('verifying the top hiring functionality', () => {
   test.use({
-    mobileNumber: '9999999999',
-    otpCode: '123456',
+    mobileNumber: testData.login.mobileNumber,
+    otpCode: testData.login.otpCode,
   });
 
   test('verifying top apply hiring functionality', async ({ page, loginPage: _loginPage }) => {
@@ -16,16 +17,13 @@ test.describe('verifying the top hiring functionality', () => {
     const profilepageobj = new ProfilePage(page);
 
     const resumePath = path.join(process.cwd(), 'test_data', 'Resume.pdf');
-
-    //const country = 'Kuwait';
-    //const positionName = 'Continental Cook';
-
-    await homepageobj.tophiringLocations('UAE');
-    await homepageobj.clickViewJobsForCountry('UAE');
+    //const testData = require('../../test_data/TestData.json');
+    
+    await homepageobj.tophiringLocations(testData.job.tophiringcountry);
+    await homepageobj.clickViewJobsForCountry(testData.job.viewjobcountry);
     await jobDetailsobj.jobCard();
     await jobDetailsobj.selectPositiontophiring();
     //await expect(page.getByRole('checkbox', { name: 'Mechanical Engineer' })).toBeChecked();
-    //await jobDetailsobj.saveJobClick();
     //await expect(page.getByText('Job saved successfully!')).toBeVisible();
     await jobDetailsobj.clickintialApply();
     // await expect(page.getByRole('dialog').getByRole('button', { name: 'Easy Apply' })).toBeEnabled();
@@ -37,17 +35,9 @@ test.describe('verifying the top hiring functionality', () => {
     await jobDetailsobj.clickFinalApply();
     //await expect( page.getByText('Congratulations! Your application has been submitted')).toBeVisible();
 
-    await profilepageobj.clickProfileBtn('apple review team');
+    await profilepageobj.clickProfileBtn(testData.profile.profileName);
     await profilepageobj.jobHeaderclick();
     await profilepageobj.openAppliedJobs();
-    // await profilepageobj.clickFirstAppliedJob();
-
-    //const appliedTitle = await profilepageobj.clickFirstAppliedJobAndGetTitle();
-    // console.log('Applied Job Position:', appliedTitle);
-
-    //await profilepageobj.appliedJobs();
-    //await profilepageobj.appliedJobs();
-    //await profilepageobj.profileButton(); // reopen profile menu
-    //await profilepageobj.logOutBtn();
+    
   });
 });

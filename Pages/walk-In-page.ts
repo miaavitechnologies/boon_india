@@ -40,8 +40,8 @@ export class Walkin extends BasePage {
     await this.searchjobtitlee.fill(title);
   }
 
-  public async selectCountry(value: string): Promise<void> {
-    await this.selectFromDivDropDown(this.selectCountry.nth(3), value);
+  public async selecttCountry(value: string): Promise<void> {
+    await this.selectFromDivDropDown(this.selectCountry.nth(3), value);//nth(3)
   }
 
   public async findJobs(): Promise<void> {
