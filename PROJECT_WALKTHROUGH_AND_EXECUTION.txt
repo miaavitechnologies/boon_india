@@ -1,0 +1,158 @@
+Boon India Automation – Project Walkthrough & Execution Guide
+================================================================
+
+PROJECT OVERVIEW
+----------------
+
+End-to-end Playwright (TypeScript) automation for https://www.boonindia.ai/ — a job/recruitment platform. Tests run against the live site and cover login, job search, apply, save job, GAMCA slip, registered agencies, test trade centre, walk-in, and add-ons.
+
+
+TECH STACK & SETUP
+------------------
+
+- Framework: @playwright/test (v1.58.x), TypeScript
+- Config: playwright.config.ts — base URL https://www.boonindia.ai/, 60s timeout, 90s navigation timeout, trace on first retry, screenshot on failure, Chromium only
+- CI: GitHub Actions (push/PR to main/master) + Jenkins pipeline; both run npm ci and npx playwright install --with-deps, then npm run ci; HTML report and test-results artifacts uploaded
+
+
+ARCHITECTURE HIGHLIGHTS
+-----------------------
+
+1. Page Object Model (POM)
+
+   - Pages/base-page.ts – Abstract BasePage extending CommonActions, with navigate(path) and full-URL handling; INavigatable and createPage() for consistency.
+   - Concrete pages: login-Logout-page, homePage, Jobdetails/jobdetailspage, profile-page, add-Ons-page, walk-In-page, registered-Agencies-page, testtrade-Centre-page, GamcaPages/gamca-page.
+
+2. Custom Fixtures (fixtures/boon.fixtures.ts)
+
+   - Extends Playwright's test with parameterized login: mobileNumber and otpCode (optional).
+   - Per-test login/teardown: each test that uses the fixture gets: navigate → open login → enter mobile → send OTP → enter OTP → test body → profile menu → logout.
+   - Exposes loginPage and re-exports expect.
+
+3. Shared Utilities (utils/common-actions.ts)
+
+   - Reusable helpers: uploadCV, logout, scrollToClick, selectTopHiringLocation, selectViewJobBtn, selectFromDivDropDown, nestedDropdown, getElementCount.
+   - Used by page objects (e.g. home page "top hiring" and view jobs).
+
+4. Central Test Data (test_data/TestData.json)
+
+   - Sections: login, job, savejobViaTophirng, savejobviaSearch, profile, gamca, registredAgencies, testTradecentre, walk-In.
+   - Holds credentials, job titles, countries, resume path, GAMCA form data (name, DOB, passport, visa, etc.), and location filters.
+   - test_data/Resume.pdf used for apply flows.
+
+
+TEST COVERAGE (BY AREA)
+-----------------------
+
+Area                      | Location                              | What it does
+--------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------
+Apply job via search      | Apply_Job_Via_Search_testcase/        | Search job (e.g. nurse) → open job card → select position → Easy Apply → upload CV → final apply → verify in profile applied jobs
+Apply job via top hiring  | Apply_Job_Via_Top_Testcase/           | Use "top hiring" locations (e.g. UAE) to open jobs → apply with CV
+Save job (search)         | save_job_via_search_testcase.spec.ts | Search (e.g. driver) → save job
+Save job (top hiring)     | Save_job_via_toptestcase/             | Top hiring country (e.g. Saudi Arabia) → save job
+GAMCA                     | GamcaTestcases/gamca-Testcase.spec.ts| GAMCA slip flow: country/city, personal details, passport, visa, etc. (data from TestData.json → gamca)
+Registered agencies       | registredAgency-Testcase.spec.ts     | State/city filters (e.g. Maharashtra, Mumbai)
+Test trade centre         | testtrade-Centre-Testcase.spec.ts    | State/city for test trade centre
+Walk-in                   | walk-In-Testcase.spec.ts              | Walk-in jobs (e.g. electrician, Saudi Arabia)
+Add-ons                   | add-Ons-Testcases.spec.ts             | Add-ons related flows
+
+
+NOTABLE IMPLEMENTATION DETAILS
+------------------------------
+
+- Login: OTP-based; fixture fills mobile, sends OTP, then fills 6-digit OTP (first box by accessible name, next five by getByRole('textbox', { name: '0' }).nth(i-1)).
+- Selectors: Prefer roles and accessible names (getByRole, getByPlaceholder) where used; some XPath/class locators in home and job details.
+- CI behaviour: fullyParallel: false, single worker in CI, 2 retries in CI, forbidOnly in CI; traces and screenshots used for debugging failures.
+
+
+STEPS FOR EXECUTING THE TESTS
+=============================
+
+Prerequisites
+-------------
+
+1. Node.js
+   - Install Node.js (LTS recommended).
+   - Check: node --version (v18+ recommended).
+
+2. Repository
+   - Clone or open the project and go to the project root:
+     cd /path/to/Boon_India_Automation
+
+3. Test data
+   - Ensure test_data/TestData.json has valid values (e.g. login.mobileNumber, login.otpCode for OTP login).
+   - Ensure test_data/Resume.pdf exists for apply-job tests.
+
+
+Installation (first time or after clone)
+----------------------------------------
+
+  # Install dependencies
+  npm ci
+
+  # Install Playwright browsers (Chromium is used in config)
+  npx playwright install --with-deps
+
+To install only Chromium (as in the config):
+
+  npx playwright install chromium --with-deps
+
+
+Running tests
+-------------
+
+Goal                              | Command
+----------------------------------|---------------------------------------------------------------------------
+Run all tests (headless)          | npm run test or npm run ci
+Run with browser visible          | npm run test:headed
+Open Playwright UI (pick & run)   | npm run test:ui
+Run a specific test file          | npx playwright test tests/<filename>.spec.ts
+Run tests in a folder             | npx playwright test tests/Apply_Job_Via_Search_testcase/
+Run with project (e.g. chromium)  | npx playwright test --project=chromium
+Run with debug mode               | npx playwright test --debug
+
+Examples:
+
+  # All tests
+  npm run test
+
+  # Single spec
+  npx playwright test tests/save_job_via_search_testcase.spec.ts
+
+  # Headed (see browser)
+  npm run test:headed
+
+  # UI mode
+  npm run test:ui
+
+
+Viewing results
+---------------
+
+- HTML report (after a run):
+    npx playwright show-report
+  Opens the last generated playwright-report.
+
+- Traces: On first retry of a failed test, a trace is recorded. Open it from the HTML report or from test-results/ in the project.
+
+
+Lint and format (optional)
+--------------------------
+
+  npm run lint           # Check lint
+  npm run lint:fix       # Auto-fix lint
+  npm run format         # Format TS with Prettier
+  npm run format:check   # Check format only
+
+
+CI (GitHub Actions / Jenkins)
+-----------------------------
+
+- GitHub: Push or open a PR to main or master; workflow runs tests and uploads playwright-report and (on failure) test-results.
+- Jenkins: Run the pipeline defined in Jenkinsfile; it runs the same test command and publishes the Playwright HTML report.
+
+
+SUMMARY
+-------
+
+The project is a structured Boon India E2E suite with custom login fixtures, POM + shared actions, JSON-driven test data, and CI on GitHub Actions and Jenkins. It focuses on job search/apply (search and top hiring), save job, profile applied jobs, GAMCA, registered agencies, test trade centre, walk-in, and add-ons, all against the production base URL.
